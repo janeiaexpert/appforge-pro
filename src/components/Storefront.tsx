@@ -42,7 +42,7 @@ function useNow() {
 function timeSlots(t: BizTemplate, isoDate: string, durationMin: number) {
   if (!isoDate) return [];
   const [y, mo, d] = isoDate.split("-").map(Number);
-  const date = new Date(y, (mo ?? 1) - 1, d ?? 1);
+  const date = new Date(y ?? 2026, (mo ?? 1) - 1, d ?? 1);
   const slot = t.hours[date.getDay() as Weekday];
   if (!slot) return [];
   const out: string[] = [];
