@@ -1,11 +1,25 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { CalendarClock, Copy, ShoppingBag, Sparkles } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
+import { CalendarClock, ClipboardList, Copy, Search, ShoppingBag, Sparkles, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { getOpenState, hoursSummary, templates } from "@/lib/templates";
 
+type Kind = "todos" | "pedido" | "agendamento";
+type Estado = "todos" | "aberto" | "fechado";
+
+type GallerySearch = { q: string; ramo: string; tipo: Kind; estado: Estado };
+
+const kinds: Kind[] = ["todos", "pedido", "agendamento"];
+const estados: Estado[] = ["todos", "aberto", "fechado"];
+
 export const Route = createFileRoute("/")({
+  validateSearch: (search: Record<string, unknown>): GallerySearch => ({
+    q: typeof search.q === "string" ? search.q : "",
+    ramo: typeof search.ramo === "string" ? search.ramo : "todos",
+    tipo: kinds.includes(search.tipo as Kind) ? (search.tipo as Kind) : "todos",
+    estado: estados.includes(search.estado as Estado) ? (search.estado as Estado) : "todos",
+  }),
   head: () => {
     const title = "Templates de sites para comércio local — prontos e funcionais";
     const description =
@@ -25,12 +39,42 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const { q, ramo, tipo, estado } = Route.useSearch();
+  const navigate = useNavigate({ from: "/" });
+  const setSearch = (patch: Partial<GallerySearch>) =>
+    navigate({ search: (prev) => ({ ...prev, ...patch }) });
+
   const [now, setNow] = useState<Date | null>(null);
   useEffect(() => {
     setNow(new Date());
     const id = setInterval(() => setNow(new Date()), 30_000);
     return () => clearInterval(id);
   }, []);
+
+  const ramos = useMemo(
+    () => Array.from(new Set(templates.map((t) => t.niche))).sort((a, b) => a.localeCompare(b)),
+    [],
+  );
+
+  const term = q.trim().toLowerCase();
+  const filtered = templates.filter((t) => {
+    if (tipo !== "todos" && t.kind !== tipo) return false;
+    if (ramo !== "todos" && t.niche !== ramo) return false;
+    if (estado !== "todos") {
+      if (!now) return true;
+      const open = getOpenState(t.hours, now).open;
+      if (estado === "aberto" && !open) return false;
+      if (estado === "fechado" && open) return false;
+    }
+    if (!term) return true;
+    const haystack = [t.name, t.niche, t.tagline, ...t.categories.flatMap((c) => [c.name, ...c.items.map((i) => i.name)])]
+      .join(" ")
+      .toLowerCase();
+    return haystack.includes(term);
+  });
+
+  const hasFilters = Boolean(term) || ramo !== "todos" || tipo !== "todos" || estado !== "todos";
+
 
   return (
     <div className="min-h-screen bg-background">
