@@ -99,17 +99,93 @@ function Index() {
           >
             Criar o meu agora
           </Link>
-          <a
-            href="#modelos"
-            className="rounded-xl border border-border px-6 py-3.5 text-base font-semibold text-foreground transition hover:bg-muted"
+          <Link
+            to="/admin"
+            className="inline-flex items-center gap-2 rounded-xl border border-border px-6 py-3.5 text-base font-semibold text-foreground transition hover:bg-muted"
           >
-            Ver os modelos
-          </a>
+            <ClipboardList className="size-4" /> Painel de pedidos
+          </Link>
         </div>
 
-        <div id="modelos" className="mt-14 grid gap-4 sm:grid-cols-2">
-          {templates.map((t) => {
+        <section id="modelos" className="mt-12 rounded-2xl border border-border bg-card p-4">
+          <div className="relative">
+            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            <input
+              value={q}
+              onChange={(e) => setSearch({ q: e.target.value })}
+              placeholder="Buscar por ramo, nome, serviço ou item do cardápio…"
+              className="input-base pl-9"
+              aria-label="Buscar modelos"
+            />
+          </div>
+
+          <div className="mt-3 grid gap-3 sm:grid-cols-3">
+            <label className="grid gap-1 text-xs font-semibold text-muted-foreground">
+              Ramo
+              <select
+                value={ramo}
+                onChange={(e) => setSearch({ ramo: e.target.value })}
+                className="input-base"
+              >
+                <option value="todos">Todos os ramos</option>
+                {ramos.map((r) => (
+                  <option key={r} value={r}>
+                    {r}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="grid gap-1 text-xs font-semibold text-muted-foreground">
+              Estilo
+              <select
+                value={tipo}
+                onChange={(e) => setSearch({ tipo: e.target.value as Kind })}
+                className="input-base"
+              >
+                <option value="todos">Pedido e agendamento</option>
+                <option value="pedido">Pedido / cardápio</option>
+                <option value="agendamento">Agendamento / serviços</option>
+              </select>
+            </label>
+            <label className="grid gap-1 text-xs font-semibold text-muted-foreground">
+              Situação agora
+              <select
+                value={estado}
+                onChange={(e) => setSearch({ estado: e.target.value as Estado })}
+                className="input-base"
+              >
+                <option value="todos">Qualquer situação</option>
+                <option value="aberto">Aberto agora</option>
+                <option value="fechado">Fechado agora</option>
+              </select>
+            </label>
+          </div>
+
+          <div className="mt-3 flex items-center justify-between gap-3 text-xs text-muted-foreground">
+            <span>
+              {filtered.length} de {templates.length} modelos
+            </span>
+            {hasFilters && (
+              <button
+                onClick={() => setSearch({ q: "", ramo: "todos", tipo: "todos", estado: "todos" })}
+                className="inline-flex items-center gap-1 font-semibold text-accent"
+              >
+                <X className="size-3.5" /> Limpar filtros
+              </button>
+            )}
+          </div>
+        </section>
+
+        {filtered.length === 0 && (
+          <p className="mt-8 rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
+            Nenhum modelo encontrado com esses filtros. Tente outro termo ou limpe os filtros.
+          </p>
+        )}
+
+        <div className="mt-8 grid gap-4 sm:grid-cols-2">
+          {filtered.map((t) => {
             const status = now ? getOpenState(t.hours, now) : null;
+
             return (
               <article
                 key={t.slug}
