@@ -26,6 +26,8 @@ import {
   type Weekday,
 } from "@/lib/templates";
 import { mapsLink, onlyDigits, useStoreConfig, waLink, type StoreConfig } from "@/lib/store-config";
+import { addRecord } from "@/lib/orders";
+
 
 type Line = { item: Item; qty: number };
 
