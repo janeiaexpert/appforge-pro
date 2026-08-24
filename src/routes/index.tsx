@@ -1,11 +1,25 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { CalendarClock, Copy, ShoppingBag, Sparkles } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
+import { CalendarClock, ClipboardList, Copy, Search, ShoppingBag, Sparkles, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { getOpenState, hoursSummary, templates } from "@/lib/templates";
 
+type Kind = "todos" | "pedido" | "agendamento";
+type Estado = "todos" | "aberto" | "fechado";
+
+type GallerySearch = { q: string; ramo: string; tipo: Kind; estado: Estado };
+
+const kinds: Kind[] = ["todos", "pedido", "agendamento"];
+const estados: Estado[] = ["todos", "aberto", "fechado"];
+
 export const Route = createFileRoute("/")({
+  validateSearch: (search: Record<string, unknown>): GallerySearch => ({
+    q: typeof search.q === "string" ? search.q : "",
+    ramo: typeof search.ramo === "string" ? search.ramo : "todos",
+    tipo: kinds.includes(search.tipo as Kind) ? (search.tipo as Kind) : "todos",
+    estado: estados.includes(search.estado as Estado) ? (search.estado as Estado) : "todos",
+  }),
   head: () => {
     const title = "Templates de sites para comércio local — prontos e funcionais";
     const description =
@@ -25,12 +39,42 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const { q, ramo, tipo, estado } = Route.useSearch();
+  const navigate = useNavigate({ from: "/" });
+  const setSearch = (patch: Partial<GallerySearch>) =>
+    navigate({ search: (prev) => ({ ...prev, ...patch }) });
+
   const [now, setNow] = useState<Date | null>(null);
   useEffect(() => {
     setNow(new Date());
     const id = setInterval(() => setNow(new Date()), 30_000);
     return () => clearInterval(id);
   }, []);
+
+  const ramos = useMemo(
+    () => Array.from(new Set(templates.map((t) => t.niche))).sort((a, b) => a.localeCompare(b)),
+    [],
+  );
+
+  const term = q.trim().toLowerCase();
+  const filtered = templates.filter((t) => {
+    if (tipo !== "todos" && t.kind !== tipo) return false;
+    if (ramo !== "todos" && t.niche !== ramo) return false;
+    if (estado !== "todos") {
+      if (!now) return true;
+      const open = getOpenState(t.hours, now).open;
+      if (estado === "aberto" && !open) return false;
+      if (estado === "fechado" && open) return false;
+    }
+    if (!term) return true;
+    const haystack = [t.name, t.niche, t.tagline, ...t.categories.flatMap((c) => [c.name, ...c.items.map((i) => i.name)])]
+      .join(" ")
+      .toLowerCase();
+    return haystack.includes(term);
+  });
+
+  const hasFilters = Boolean(term) || ramo !== "todos" || tipo !== "todos" || estado !== "todos";
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -55,17 +99,93 @@ function Index() {
           >
             Criar o meu agora
           </Link>
-          <a
-            href="#modelos"
-            className="rounded-xl border border-border px-6 py-3.5 text-base font-semibold text-foreground transition hover:bg-muted"
+          <Link
+            to="/admin"
+            className="inline-flex items-center gap-2 rounded-xl border border-border px-6 py-3.5 text-base font-semibold text-foreground transition hover:bg-muted"
           >
-            Ver os modelos
-          </a>
+            <ClipboardList className="size-4" /> Painel de pedidos
+          </Link>
         </div>
 
-        <div id="modelos" className="mt-14 grid gap-4 sm:grid-cols-2">
-          {templates.map((t) => {
+        <section id="modelos" className="mt-12 rounded-2xl border border-border bg-card p-4">
+          <div className="relative">
+            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            <input
+              value={q}
+              onChange={(e) => setSearch({ q: e.target.value })}
+              placeholder="Buscar por ramo, nome, serviço ou item do cardápio…"
+              className="input-base pl-9"
+              aria-label="Buscar modelos"
+            />
+          </div>
+
+          <div className="mt-3 grid gap-3 sm:grid-cols-3">
+            <label className="grid gap-1 text-xs font-semibold text-muted-foreground">
+              Ramo
+              <select
+                value={ramo}
+                onChange={(e) => setSearch({ ramo: e.target.value })}
+                className="input-base"
+              >
+                <option value="todos">Todos os ramos</option>
+                {ramos.map((r) => (
+                  <option key={r} value={r}>
+                    {r}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="grid gap-1 text-xs font-semibold text-muted-foreground">
+              Estilo
+              <select
+                value={tipo}
+                onChange={(e) => setSearch({ tipo: e.target.value as Kind })}
+                className="input-base"
+              >
+                <option value="todos">Pedido e agendamento</option>
+                <option value="pedido">Pedido / cardápio</option>
+                <option value="agendamento">Agendamento / serviços</option>
+              </select>
+            </label>
+            <label className="grid gap-1 text-xs font-semibold text-muted-foreground">
+              Situação agora
+              <select
+                value={estado}
+                onChange={(e) => setSearch({ estado: e.target.value as Estado })}
+                className="input-base"
+              >
+                <option value="todos">Qualquer situação</option>
+                <option value="aberto">Aberto agora</option>
+                <option value="fechado">Fechado agora</option>
+              </select>
+            </label>
+          </div>
+
+          <div className="mt-3 flex items-center justify-between gap-3 text-xs text-muted-foreground">
+            <span>
+              {filtered.length} de {templates.length} modelos
+            </span>
+            {hasFilters && (
+              <button
+                onClick={() => setSearch({ q: "", ramo: "todos", tipo: "todos", estado: "todos" })}
+                className="inline-flex items-center gap-1 font-semibold text-accent"
+              >
+                <X className="size-3.5" /> Limpar filtros
+              </button>
+            )}
+          </div>
+        </section>
+
+        {filtered.length === 0 && (
+          <p className="mt-8 rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
+            Nenhum modelo encontrado com esses filtros. Tente outro termo ou limpe os filtros.
+          </p>
+        )}
+
+        <div className="mt-8 grid gap-4 sm:grid-cols-2">
+          {filtered.map((t) => {
             const status = now ? getOpenState(t.hours, now) : null;
+
             return (
               <article
                 key={t.slug}

@@ -26,6 +26,8 @@ import {
   type Weekday,
 } from "@/lib/templates";
 import { mapsLink, onlyDigits, useStoreConfig, waLink, type StoreConfig } from "@/lib/store-config";
+import { addRecord } from "@/lib/orders";
+
 
 type Line = { item: Item; qty: number };
 
@@ -147,9 +149,23 @@ export function Storefront({ template: t }: { template: BizTemplate }) {
       toast.error("Complete os campos obrigatórios antes de enviar.");
       return;
     }
+    addRecord({
+      kind: t.kind,
+      templateSlug: t.slug,
+      templateNiche: t.niche,
+      storeName: config.name,
+      customer: customer.trim(),
+      date: t.kind === "agendamento" ? date : todayISO(),
+      ...(t.kind === "agendamento" ? { time } : { mode, payment }),
+      ...(t.kind === "pedido" && mode === "entrega" ? { address: deliveryAddress.trim() } : {}),
+      ...(notes.trim() ? { notes: notes.trim() } : {}),
+      lines: cart.map((l) => ({ name: l.item.name, qty: l.qty, price: l.item.price })),
+      total,
+    });
     window.open(waLink(config.whatsapp, message()), "_blank", "noopener,noreferrer");
-    toast.success("Abrimos o WhatsApp com seu resumo pronto.");
+    toast.success("Registrado no painel e WhatsApp aberto com o resumo.");
   };
+
 
   const cat = t.categories.find((c) => c.id === activeCat) ?? t.categories[0]!;
 
