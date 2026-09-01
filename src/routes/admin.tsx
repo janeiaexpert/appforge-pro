@@ -32,13 +32,13 @@ const statusStyle: Record<RecordStatus, string> = {
 
 export const Route = createFileRoute("/admin")({
   validateSearch: (search: Record<string, unknown>): AdminSearch => ({
-    q: typeof search.q === "string" ? search.q : "",
-    tipo: tipos.includes(search.tipo as Tipo) ? (search.tipo as Tipo) : "todos",
-    status: statuses.includes(search.status as StatusFilter)
-      ? (search.status as StatusFilter)
+    q: typeof search["q"] === "string" ? search["q"] : "",
+    tipo: tipos.includes(search["tipo"] as Tipo) ? (search["tipo"] as Tipo) : "todos",
+    status: statuses.includes(search["status"] as StatusFilter)
+      ? (search["status"] as StatusFilter)
       : "todos",
-    de: typeof search.de === "string" ? search.de : "",
-    ate: typeof search.ate === "string" ? search.ate : "",
+    de: typeof search["de"] === "string" ? search["de"] : "",
+    ate: typeof search["ate"] === "string" ? search["ate"] : "",
   }),
   head: () => {
     const title = "Painel de pedidos e agendamentos — comércio local";
