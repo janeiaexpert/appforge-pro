@@ -101,6 +101,7 @@ function Index() {
           </Link>
           <Link
             to="/admin"
+            search={{ q: "", tipo: "todos", status: "todos", de: "", ate: "" }}
             className="inline-flex items-center gap-2 rounded-xl border border-border px-6 py-3.5 text-base font-semibold text-foreground transition hover:bg-muted"
           >
             <ClipboardList className="size-4" /> Painel de pedidos
