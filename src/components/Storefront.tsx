@@ -189,6 +189,7 @@ export function Storefront({ template: t }: { template: BizTemplate }) {
           <div className="flex items-center justify-between">
             <Link
               to="/"
+              search={{ q: "", ramo: "todos", tipo: "todos", estado: "todos" }}
               className="inline-flex items-center gap-1.5 rounded-full bg-foreground/10 px-3 py-1.5 text-xs font-medium text-foreground/80 transition hover:bg-foreground/20"
             >
               <ArrowLeft className="size-3.5" /> Templates

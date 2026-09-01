@@ -15,10 +15,10 @@ const estados: Estado[] = ["todos", "aberto", "fechado"];
 
 export const Route = createFileRoute("/")({
   validateSearch: (search: Record<string, unknown>): GallerySearch => ({
-    q: typeof search.q === "string" ? search.q : "",
-    ramo: typeof search.ramo === "string" ? search.ramo : "todos",
-    tipo: kinds.includes(search.tipo as Kind) ? (search.tipo as Kind) : "todos",
-    estado: estados.includes(search.estado as Estado) ? (search.estado as Estado) : "todos",
+    q: typeof search["q"] === "string" ? search["q"] : "",
+    ramo: typeof search["ramo"] === "string" ? search["ramo"] : "todos",
+    tipo: kinds.includes(search["tipo"] as Kind) ? (search["tipo"] as Kind) : "todos",
+    estado: estados.includes(search["estado"] as Estado) ? (search["estado"] as Estado) : "todos",
   }),
   head: () => {
     const title = "Templates de sites para comércio local — prontos e funcionais";
@@ -101,6 +101,7 @@ function Index() {
           </Link>
           <Link
             to="/admin"
+            search={{ q: "", tipo: "todos", status: "todos", de: "", ate: "" }}
             className="inline-flex items-center gap-2 rounded-xl border border-border px-6 py-3.5 text-base font-semibold text-foreground transition hover:bg-muted"
           >
             <ClipboardList className="size-4" /> Painel de pedidos

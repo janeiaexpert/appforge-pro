@@ -67,7 +67,13 @@ export function addRecord(rec: Omit<BizRecord, "id" | "createdAt" | "status">): 
 }
 
 export function setStatus(id: string, status: RecordStatus, cancelReason?: string) {
-  write(read().map((r) => (r.id === id ? { ...r, status, cancelReason } : r)));
+  write(
+    read().map((r) =>
+      r.id === id
+        ? { ...r, status, ...(cancelReason === undefined ? {} : { cancelReason }) }
+        : r,
+    ),
+  );
 }
 
 export function removeRecord(id: string) {
