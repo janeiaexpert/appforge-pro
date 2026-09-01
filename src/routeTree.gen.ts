@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CriarRouteImport } from './routes/criar'
+import { Route as LojaRouteImport } from './routes/loja'
 import { Route as TSlugRouteImport } from './routes/t.$slug'
 
 const IndexRoute = IndexRouteImport.update({
@@ -29,6 +30,11 @@ const CriarRoute = CriarRouteImport.update({
   path: '/criar',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LojaRoute = LojaRouteImport.update({
+  id: '/loja',
+  path: '/loja',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TSlugRoute = TSlugRouteImport.update({
   id: '/t/$slug',
   path: '/t/$slug',
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/criar': typeof CriarRoute
+  '/loja': typeof LojaRoute
   '/t/$slug': typeof TSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/criar': typeof CriarRoute
+  '/loja': typeof LojaRoute
   '/t/$slug': typeof TSlugRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,22 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/criar': typeof CriarRoute
+  '/loja': typeof LojaRoute
   '/t/$slug': typeof TSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/criar' | '/t/$slug'
+  fullPaths: '/' | '/admin' | '/criar' | '/loja' | '/t/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/criar' | '/t/$slug'
-  id: '__root__' | '/' | '/admin' | '/criar' | '/t/$slug'
+  to: '/' | '/admin' | '/criar' | '/loja' | '/t/$slug'
+  id: '__root__' | '/' | '/admin' | '/criar' | '/loja' | '/t/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   CriarRoute: typeof CriarRoute
+  LojaRoute: typeof LojaRoute
   TSlugRoute: typeof TSlugRoute
 }
 
@@ -92,6 +102,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CriarRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/loja': {
+      id: '/loja'
+      path: '/loja'
+      fullPath: '/loja'
+      preLoaderRoute: typeof LojaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/t/$slug': {
       id: '/t/$slug'
       path: '/t/$slug'
@@ -106,6 +123,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   CriarRoute: CriarRoute,
+  LojaRoute: LojaRoute,
   TSlugRoute: TSlugRoute,
 }
 export const routeTree = rootRouteImport
