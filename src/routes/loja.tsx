@@ -264,7 +264,7 @@ function LojaPage() {
                       params={{ slug: t.slug }}
                       className="mt-3 block text-[11px] font-semibold text-accent hover:underline"
                     >
-                      Ver demonstração →
+                      Abrir modelo funcional →
                     </Link>
                   </article>
                 );
