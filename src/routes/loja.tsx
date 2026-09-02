@@ -272,7 +272,10 @@ function LojaPage() {
             </div>
           </div>
 
-          <aside className="h-fit rounded-2xl border border-border bg-card p-4 lg:sticky lg:top-6">
+          <aside
+            id="carrinho"
+            className="h-fit scroll-mt-20 rounded-2xl border border-border bg-card p-4 lg:sticky lg:top-20"
+          >
             <h2 className="font-display inline-flex items-center gap-2 text-lg font-bold">
               <ShoppingCart className="size-4 text-accent" /> Carrinho
             </h2>
