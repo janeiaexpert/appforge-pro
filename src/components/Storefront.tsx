@@ -535,23 +535,24 @@ export function Storefront({ template: t }: { template: BizTemplate }) {
         </section>
       </main>
 
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 px-5 py-3 backdrop-blur">
-        <div className="mx-auto flex max-w-3xl items-center gap-3">
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 px-3 py-3 backdrop-blur sm:px-5">
+        <div className="mx-auto flex max-w-3xl items-center gap-2 sm:gap-3">
           <button
             onClick={() => setSheet((v) => !v)}
-            className="flex items-center gap-2 rounded-xl border border-border px-3 py-2.5 text-sm font-semibold"
+            aria-label={sheet ? "Fechar resumo" : "Ver resumo"}
+            className="flex shrink-0 items-center gap-1.5 rounded-xl border border-border px-2.5 py-2.5 text-sm font-semibold"
           >
             <ShoppingBag className="size-4" />
             {count}
           </button>
-          <div className="min-w-0 flex-1">
-            <p className="text-xs text-muted-foreground">Total</p>
-            <p className="truncate font-bold">{brl(total)}</p>
+          <div className="min-w-0 shrink-0">
+            <p className="text-[11px] leading-tight text-muted-foreground">Total</p>
+            <p className="font-bold whitespace-nowrap">{brl(total)}</p>
           </div>
           <button
             onClick={send}
             disabled={!canSend}
-            className="rounded-xl px-4 py-3 text-sm font-bold transition disabled:cursor-not-allowed disabled:opacity-40"
+            className="min-w-0 flex-1 truncate rounded-xl px-3 py-3 text-xs font-bold transition disabled:cursor-not-allowed disabled:opacity-40 sm:text-sm"
             style={{ backgroundColor: "var(--brand)", color: "oklch(0.16 0.01 0)" }}
           >
             {t.ctaLabel}
