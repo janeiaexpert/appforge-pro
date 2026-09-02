@@ -63,7 +63,11 @@ function AdminPage() {
   const { q, tipo, status, de, ate } = Route.useSearch();
   const navigate = useNavigate({ from: "/admin" });
   const setSearch = (patch: Partial<AdminSearch>) =>
-    navigate({ search: (prev) => ({ ...prev, ...patch }) });
+    navigate({
+      search: (prev) => ({ ...prev, ...patch }),
+      replace: true,
+      resetScroll: false,
+    });
 
   const { records, loaded } = useRecords();
   const [cancelling, setCancelling] = useState<BizRecord | null>(null);
