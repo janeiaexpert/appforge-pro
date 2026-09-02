@@ -92,17 +92,23 @@ function Index() {
           horário real, carrinho, agendamento e o pedido caindo no WhatsApp do comércio.
         </p>
 
-        <div className="mt-7 flex flex-wrap gap-3">
+        <div className="mt-7 grid gap-3 sm:flex sm:flex-wrap">
           <Link
             to="/criar"
-            className="rounded-xl bg-accent px-6 py-3.5 text-base font-bold text-accent-foreground transition hover:brightness-110"
+            className="rounded-xl bg-accent px-6 py-3.5 text-center text-base font-bold text-accent-foreground transition hover:brightness-110"
           >
             Criar o meu agora
           </Link>
           <Link
+            to="/loja"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-border px-6 py-3.5 text-base font-semibold text-foreground transition hover:bg-muted"
+          >
+            <Store className="size-4" /> Loja de templates
+          </Link>
+          <Link
             to="/admin"
             search={{ q: "", tipo: "todos", status: "todos", de: "", ate: "" }}
-            className="inline-flex items-center gap-2 rounded-xl border border-border px-6 py-3.5 text-base font-semibold text-foreground transition hover:bg-muted"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-border px-6 py-3.5 text-base font-semibold text-foreground transition hover:bg-muted"
           >
             <ClipboardList className="size-4" /> Painel de pedidos
           </Link>
