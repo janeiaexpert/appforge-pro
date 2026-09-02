@@ -51,7 +51,11 @@ function Index() {
   const { q, ramo, tipo, estado } = Route.useSearch();
   const navigate = useNavigate({ from: "/" });
   const setSearch = (patch: Partial<GallerySearch>) =>
-    navigate({ search: (prev) => ({ ...prev, ...patch }) });
+    navigate({
+      search: (prev) => ({ ...prev, ...patch }),
+      replace: true,
+      resetScroll: false,
+    });
 
   const [now, setNow] = useState<Date | null>(null);
   useEffect(() => {
