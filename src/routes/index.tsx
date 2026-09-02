@@ -1,6 +1,15 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { CalendarClock, ClipboardList, Copy, Search, ShoppingBag, Sparkles, X } from "lucide-react";
+import {
+  CalendarClock,
+  ClipboardList,
+  Copy,
+  Search,
+  ShoppingBag,
+  Sparkles,
+  Store,
+  X,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import { getOpenState, hoursSummary, templates } from "@/lib/templates";
@@ -78,7 +87,7 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="mx-auto max-w-5xl px-5 pt-12 pb-20">
+      <div className="mx-auto max-w-5xl px-4 pt-10 pb-20 sm:px-5 sm:pt-12">
         <span className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-accent">
           <Sparkles className="size-3.5" /> {templates.length} modelos funcionais
         </span>
