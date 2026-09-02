@@ -1,6 +1,15 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { CalendarClock, ClipboardList, Copy, Search, ShoppingBag, Sparkles, X } from "lucide-react";
+import {
+  CalendarClock,
+  ClipboardList,
+  Copy,
+  Search,
+  ShoppingBag,
+  Sparkles,
+  Store,
+  X,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import { getOpenState, hoursSummary, templates } from "@/lib/templates";
@@ -78,7 +87,7 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="mx-auto max-w-5xl px-5 pt-12 pb-20">
+      <div className="mx-auto max-w-5xl px-4 pt-10 pb-20 sm:px-5 sm:pt-12">
         <span className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-accent">
           <Sparkles className="size-3.5" /> {templates.length} modelos funcionais
         </span>
@@ -92,17 +101,23 @@ function Index() {
           horário real, carrinho, agendamento e o pedido caindo no WhatsApp do comércio.
         </p>
 
-        <div className="mt-7 flex flex-wrap gap-3">
+        <div className="mt-7 grid gap-3 sm:flex sm:flex-wrap">
           <Link
             to="/criar"
-            className="rounded-xl bg-accent px-6 py-3.5 text-base font-bold text-accent-foreground transition hover:brightness-110"
+            className="rounded-xl bg-accent px-6 py-3.5 text-center text-base font-bold text-accent-foreground transition hover:brightness-110"
           >
             Criar o meu agora
           </Link>
           <Link
+            to="/loja"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-border px-6 py-3.5 text-base font-semibold text-foreground transition hover:bg-muted"
+          >
+            <Store className="size-4" /> Loja de templates
+          </Link>
+          <Link
             to="/admin"
             search={{ q: "", tipo: "todos", status: "todos", de: "", ate: "" }}
-            className="inline-flex items-center gap-2 rounded-xl border border-border px-6 py-3.5 text-base font-semibold text-foreground transition hover:bg-muted"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-border px-6 py-3.5 text-base font-semibold text-foreground transition hover:bg-muted"
           >
             <ClipboardList className="size-4" /> Painel de pedidos
           </Link>
