@@ -148,7 +148,7 @@ function LojaPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="mx-auto max-w-5xl px-5 pt-8 pb-24">
+      <div className="mx-auto max-w-5xl px-4 pt-8 pb-28 sm:px-5">
         <Link
           to="/"
           search={{ q: "", ramo: "todos", tipo: "todos", estado: "todos" }}
@@ -421,6 +421,25 @@ function LojaPage() {
           </section>
         )}
       </div>
+
+      {total > 0 && (
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-4 py-3 backdrop-blur lg:hidden">
+          <div className="mx-auto flex max-w-5xl items-center gap-3">
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] leading-tight text-muted-foreground">
+                {lines.reduce((s, l) => s + l.qty, 0)} item(ns) no carrinho
+              </p>
+              <p className="font-display font-extrabold text-accent">{brl(total)}</p>
+            </div>
+            <a
+              href="#carrinho"
+              className="rounded-xl bg-accent px-4 py-3 text-sm font-bold text-accent-foreground"
+            >
+              Finalizar pedido
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
